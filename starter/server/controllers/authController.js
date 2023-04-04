@@ -65,8 +65,14 @@ const logout = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "user logged out!" });
 };
 
+const verifyEmail = async (req, res) => {
+  const { verificationToken, email } = req.body;
+  res.status(StatusCodes.OK).json({ verificationToken, email });
+};
+
 module.exports = {
   register,
   login,
   logout,
+  verifyEmail,
 };
