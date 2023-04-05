@@ -27,8 +27,10 @@ const register = async (req, res) => {
   });
 
   res.status(StatusCodes.CREATED).json({
-    msg: "Success! Please check your email to verify your account",
-    verificationToken: user.verificationToken,
+    msg: "Success!",
+    user: name,
+    email: email,
+    verificationToken: verificationToken,
   });
 };
 
@@ -67,7 +69,23 @@ const logout = async (req, res) => {
 
 const verifyEmail = async (req, res) => {
   const { verificationToken, email } = req.body;
-  res.status(StatusCodes.OK).json({ verificationToken, email });
+
+  const user = await User.findOne({ email: email });
+
+  if (!user) {
+    throw new CustomError.NotFoundError("Verification failed");
+  }
+
+  if (user.verificationToken !== verificationToken) {
+    throw new CustomError.NotFoundError("Verification failed");
+  }
+
+  user.isVerified = true;
+  user.verified = Date.now();
+  user.verificationToken = "";
+  await user.save();
+
+  res.status(StatusCodes.OK).json({ msg: "Verified!" });
 };
 
 module.exports = {
