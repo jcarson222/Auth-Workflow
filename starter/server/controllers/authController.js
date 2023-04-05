@@ -27,8 +27,10 @@ const register = async (req, res) => {
   });
 
   res.status(StatusCodes.CREATED).json({
-    msg: "Success! Please check your email to verify your account",
-    verificationToken: user.verificationToken,
+    msg: "Success!",
+    user: name,
+    email: email,
+    verificationToken: verificationToken,
   });
 };
 
